@@ -1,0 +1,23 @@
+/* Style normalization */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+
+    font-family: "Avenir", "Helvetica Neue", "Segoe UI", sans-serif;
+    font-weight: 400;
+}
+
+/* Make font-sizes scalable */
+html {
+    font-size: 10px;
+}
+
+*:not(html) {
+    font-size: 1.6rem;
+}
+
+/* Body styles */
+body {
+    padding: 15vh 30%;
+}
