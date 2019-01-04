@@ -10,20 +10,20 @@ module.exports = async (req, res) => {
 
     // Fetch the profile link
     const userUrl = 
-        `https://api.stackoverflow.com/2.3/me?site=stackoverflow&access_token=${accessToken}&key=${process.env.OAUTH_APP_KEY}`;
+        `https://api.stackoverflow.com/2.3/me?site=stackoverflow&access_token=${userData.accessToken}&key=${process.env.OAUTH_APP_KEY}`;
 
-    const userResponse = await fetch (userUrl);
-    const userData = await userResponse.json ();
+    const seUserResponse = await fetch (userUrl);
+    const seUserData = await seUserResponse.json ();
 
     // Check for errors
-    if (userData ["error_id"]) {
+    if (seUserData ["error_id"]) {
         return res.render ("error", {
-            errorMessage: userData ["error_message"]
+            errorMessage: seUserData ["error_message"]
         });
     }
 
     // Extract the username
-    const userLink = userData ["items"][0]["link"];
+    const userLink = seUserData ["items"][0]["link"];
     if (!userLink) return res.redirect ("/");
 
     // Redirect

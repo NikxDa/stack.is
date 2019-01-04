@@ -21,6 +21,15 @@ mongoose.connect (`mongodb://${process.env.MONGO_HOST}:27017/${process.env.MONGO
     user: process.env.MONGO_USER,
     pass: process.env.MONGO_PASS,
     useNewUrlParser: true
+}, err => {
+    console.log (
+        err 
+            ? `Error while connecting to database: "${err.message}"`
+            : `Successfully connected to database on ${process.env.MONGO_HOST}:27017`  
+    );
+    
+    // Quit if a database connection could not be established
+    if (err) process.exit ();
 });
 
 // Create the app
