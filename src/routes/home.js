@@ -74,7 +74,7 @@ module.exports = async (req, res) => {
 
     // Build oAuth link
     const clientId = 14163;
-    const oAuthUrl = "https://stackoverflow.com/oauth/dialog";
+    const oAuthUrl = "https://stackoverflow.com/oauth/";
     const redirectUrl = "https://stack.is/";
     
     const finalizedUrl = `${oAuthUrl}?client_id=${clientId}&scope=no_expiry&redirect_uri=${redirectUrl}`;
