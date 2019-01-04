@@ -1,10 +1,13 @@
-const createLinkButton = document.getElementById ("createLinkButton");
-const stackExchange = new StackExchange ();
+/*
+ * Stack.is
+ * © 2019 nikx.io
+ * contact@nikx.io
+**/
 
-if (createLinkButton)
-    createLinkButton.addEventListener ("click", () => stackExchange.oAuthDialog ());
-
-if (window.location.hash) {
-    const token = stackExchange.validateOAuth ();
-    alert (token);
-}
+// Set up tooltip for "Create Link" button
+tippy ("#createLinkButton", { 
+    placement: "bottom", 
+    content: "You will be redirected to StackExchange to confirm.", 
+    theme: "light-border", 
+    arrow: true 
+});
