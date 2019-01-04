@@ -49,7 +49,7 @@ async function verifyUser (oAuthCode) {
     UserModel.findOneAndUpdate ({}, {
         user: userName, 
         accessToken
-    }, { upsert: true });
+    }, { upsert: true, new: true, setDefaultsOnInsert: true });
 
     // Return username
     return userName;
