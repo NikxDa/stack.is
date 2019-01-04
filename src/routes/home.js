@@ -46,11 +46,10 @@ async function verifyUser (oAuthCode) {
     const userName = seUserData ["items"][0]["link"].split ("/").pop ().toLowerCase ();
     
     // Save the data
-    const userData = new UserModel ({
+    UserModel.findOneAndUpdate ({}, {
         user: userName, 
         accessToken
-    });
-    userData.save ();
+    }, { upsert: true });
 
     // Return username
     return userName;

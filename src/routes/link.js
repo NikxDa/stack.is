@@ -6,7 +6,7 @@ module.exports = async (req, res) => {
     const requestedUser = req.params.user.toLowerCase ();
 
     // Fetch the matching auth token
-    const userData = await UserModel.find ({ user: requestedUser });
+    const userData = await UserModel.findOne ({ user: requestedUser });
     if (!userData) return res.redirect ("/");
 
     // Fetch the profile link
