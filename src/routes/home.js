@@ -47,7 +47,7 @@ async function verifyUser (oAuthCode) {
     const userId = Number (seUserData ["items"][0]["user_id"]);
 
     // Does a user with this ID exist?
-    const existingUser = UserModel.findOne ({ userId });
+    const existingUser = await UserModel.findOne ({ userId });
     if (existingUser) {
         throw new Error ("That user already exists: https://stack.is/" + userName);
     }

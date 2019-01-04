@@ -17,6 +17,7 @@ dotenv.config ({
 });
 
 // Connect to Mongoose
+mongoose.Promise = window.Promise;
 mongoose.connect (`mongodb://${process.env.MONGO_HOST}:27017/${process.env.MONGO_DB}`, {
     user: process.env.MONGO_USER,
     pass: process.env.MONGO_PASS,
