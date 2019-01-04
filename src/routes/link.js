@@ -2,7 +2,7 @@ const UserModel = require ("../models/UserModel");
 
 module.exports = async (req, res) => {
     // Grab requested user
-    const requestedUser = req.params.user.toLowerString ();
+    const requestedUser = req.params.user.toLowerCase ();
 
     // Fetch the matching auth token
     const userData = await UserModel.find ({ user: requestedUser });

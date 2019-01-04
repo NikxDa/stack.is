@@ -43,7 +43,7 @@ async function verifyUser (oAuthCode) {
     }
 
     // Extract the username
-    const userName = seUserData ["items"][0]["link"].split ("/").pop ().toLowerString ();
+    const userName = seUserData ["items"][0]["link"].split ("/").pop ().toLowerCase ();
     
     // Save the data
     const userData = new UserModel ({
