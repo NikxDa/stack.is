@@ -1,3 +1,4 @@
+const fetch = require ("node-fetch");
 const UserModel = require ("../models/UserModel");
 
 module.exports = async (req, res) => {
