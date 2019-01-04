@@ -26,27 +26,23 @@ async function verifyUser (oAuthCode) {
     // Grab access token
     const accessToken = oAuthData ["access_token"];
     if (!accessToken) {
-        return res.render ("error", {
-            errorMessage: oAuthData ["error_message"]
-        });
+        throw new Error (oAuthData ["error_message"]);
     }
 
     // Request and save user
     const userUrl = 
         `https://api.stackoverflow.com/2.3/me?site=stackoverflow&access_token=${accessToken}&key=${process.env.OAUTH_APP_KEY}`;
     
-    const userResponse = await fetch (userUrl);
-    const userData = await userResponse.json ();
+    const seUserResponse = await fetch (userUrl);
+    const seUserData = await seUserResponse.json ();
 
     // Check for errors
-    if (userData ["error_id"]) {
-        return res.render ("error", {
-            errorMessage: userData ["error_message"]
-        });
+    if (seUserData ["error_id"]) {
+        throw new Error (seUserData ["error_message"]);
     }
 
     // Extract the username
-    const userName = userData ["items"][0]["link"].split ("/").pop ().toLowerString ();
+    const userName = seUserData ["items"][0]["link"].split ("/").pop ().toLowerString ();
     
     // Save the data
     const userData = new UserModel ({
@@ -63,10 +59,17 @@ module.exports = async (req, res) => {
     // Grab code from result
     const oAuthCode = req.query.code;
     if (oAuthCode) {
-        const username = await verifyUser (oAuthCode);
-        return res.render ("success", {
-            shortLink: `https://stack.is/${username}`
-        });
+        try {
+            const username = await verifyUser (oAuthCode);
+
+            return res.render ("success", {
+                shortLink: `https://stack.is/${username}`
+            });
+        } catch (err) {
+            return res.render ("error", {
+                errorMessage: err.message
+            });
+        }
     }
 
     // Build oAuth link
