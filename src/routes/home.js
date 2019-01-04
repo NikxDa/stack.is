@@ -49,7 +49,7 @@ async function verifyUser (oAuthCode) {
     // Does a user with this ID exist?
     const existingUser = UserModel.findOne ({ userId });
     if (existingUser) {
-        return res.render ("exists", { shortLink: `https://stack.is/${userName}` });
+        throw new Error ("That user already exists: https://stack.is/" + userName);
     }
 
     // Save the data
