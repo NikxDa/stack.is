@@ -18,6 +18,7 @@ async function verifyUser (oAuthCode) {
     const oAuthParams = new URLSearchParams ();
     oAuthParams.append ("client_id", clientId);
     oAuthParams.append ("client_secret", clientSecret);
+    oAuthParams.append ("redirect_uri", "https://stack.is/");
     oAuthParams.append ("code", oAuthCode);
 
     const oAuthResponse = await fetch (oAuthValidationUrl, { method: "POST", body: oAuthParams });
