@@ -10,7 +10,7 @@ module.exports = async (req, res) => {
 
     // Fetch the profile link
     const userUrl = 
-        `https://api.stackoverflow.com/2.3/me?site=stackoverflow&access_token=${userData.accessToken}&key=${process.env.OAUTH_APP_KEY}`;
+        `https://api.stackexchange.com/2.3/me?site=stackoverflow&access_token=${userData.accessToken}&key=${process.env.OAUTH_APP_KEY}`;
 
     const seUserResponse = await fetch (userUrl);
     const seUserData = await seUserResponse.json ();
