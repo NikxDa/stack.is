@@ -2,6 +2,7 @@ const mongoose = require ("mongoose")
 
 const userSchema = new mongoose.Schema ({
     user:           { type: String, unique: true },
+    userId:         { type: Number, unique: true },
     accessToken:    { type: String }
 });
 

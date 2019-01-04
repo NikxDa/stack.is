@@ -44,12 +44,21 @@ async function verifyUser (oAuthCode) {
 
     // Extract the username
     const userName = seUserData ["items"][0]["link"].split ("/").pop ().toLowerCase ();
-    
+    const userId = Number (seUserData ["items"][0]["user_id"]);
+
+    // Does a user with this ID exist?
+    const existingUser = UserModel.findOne ({ userId });
+    if (existingUser) {
+        return res.render ("exists", { shortLink: `https://stack.is/${userName}` });
+    }
+
     // Save the data
-    UserModel.findOneAndUpdate ({}, {
+    const userData = new UserModel({
         user: userName, 
+        userId,
         accessToken
-    }, { upsert: true, new: true, setDefaultsOnInsert: true });
+    });
+    userData.save ();
 
     // Return username
     return userName;
