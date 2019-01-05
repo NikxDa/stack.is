@@ -1,30 +1,19 @@
 const fetch = require ("node-fetch");
-const UserModel = require ("../models/UserModel");
+const Users = require ("../lib/Users");
 
 module.exports = async (req, res) => {
     // Grab requested user
     const requestedUser = req.params.user.toLowerCase ();
 
-    // Fetch the matching auth token
-    const userData = await UserModel.findOne ({ user: requestedUser });
+    // Fetch the matching access token
+    const userData = await Users.getUserByName (requestedUser);
     if (!userData) return res.redirect ("/");
 
     // Fetch the profile link
-    const userUrl = 
-        `https://api.stackexchange.com/2.3/me?site=stackoverflow&access_token=${userData.accessToken}&key=${process.env.OAUTH_APP_KEY}`;
-
-    const seUserResponse = await fetch (userUrl);
-    const seUserData = await seUserResponse.json ();
-
-    // Check for errors
-    if (seUserData ["error_id"]) {
-        return res.render ("error", {
-            errorMessage: seUserData ["error_message"]
-        });
-    }
+    const seUserData = StackExchange.getUserByAccessToken (userData.accessToken);
 
     // Extract the username
-    const userLink = seUserData ["items"][0]["link"];
+    const userLink = seUserData ["link"];
     if (!userLink) return res.redirect ("/");
 
     // Redirect

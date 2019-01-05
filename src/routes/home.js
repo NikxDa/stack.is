@@ -1,64 +1,43 @@
-const fetch = require ("node-fetch");
-const { URLSearchParams } = require ("url");
-const UserModel = require ("../models/UserModel");
+const Users = require ("../lib/Users");
+const StackExchange = require ("../lib/StackExchange");
 
 async function verifyUser (oAuthCode) { 
-    // Grab oAuth data from environment
-    const clientId = process.env.OAUTH_CLIENT_ID;
-    const clientSecret = process.env.OAUTH_CLIENT_SECRET;
-
-    // Validate oAuth values
-    if (!clientId || !clientSecret)
-        return false;
+    // Check that there is an OAuth code
+    if (!oAuthCode)
+        throw new Error ("No OAuth Code found.");
 
     // Now send the code to StackExchange for validation
-    const oAuthValidationUrl = 
-        `https://stackoverflow.com/oauth/access_token/json`;
+    const accessToken = await StackExchange.verifyOAuth (oAuthCode);
 
-    const oAuthParams = new URLSearchParams ();
-    oAuthParams.append ("client_id", clientId);
-    oAuthParams.append ("client_secret", clientSecret);
-    oAuthParams.append ("redirect_uri", "https://stack.is/");
-    oAuthParams.append ("code", oAuthCode);
+    // Request user data
+    const seUserData = await StackExchange.getUserByAccessToken (accessToken);
 
-    const oAuthResponse = await fetch (oAuthValidationUrl, { method: "POST", body: oAuthParams });
-    const oAuthData = await oAuthResponse.json ();
-
-    // Grab access token
-    const accessToken = oAuthData ["access_token"];
-    if (!accessToken) {
-        throw new Error (oAuthData ["error_message"]);
-    }
-
-    // Request and save user
-    const userUrl = 
-        `https://api.stackexchange.com/2.3/me?site=stackoverflow&access_token=${accessToken}&key=${process.env.OAUTH_APP_KEY}`;
-    
-    const seUserResponse = await fetch (userUrl);
-    const seUserData = await seUserResponse.json ();
-
-    // Check for errors
-    if (seUserData ["error_id"]) {
-        throw new Error (seUserData ["error_message"]);
-    }
-
-    // Extract the username
-    const userName = seUserData ["items"][0]["link"].split ("/").pop ().toLowerCase ();
-    const userId = Number (seUserData ["items"][0]["user_id"]);
+    // Extract the user data
+    const userName = seUserData ["link"].split ("/").pop ().toLowerCase ();
+    const userId = Number (seUserData ["user_id"]);
 
     // Does a user with this ID exist?
-    const existingUser = await UserModel.findOne ({ userId });
+    const existingUser = await Users.getUserById (userId);
     if (existingUser) {
-        throw new Error ("That user already exists: https://stack.is/" + userName);
+        // A user with this ID exists, has the username changed?
+        if (userName !== existingUser.user) {
+            // Update the old entry
+            await Users.updateUserById (userId, {
+                user: userName
+            });
+        } 
+
+        // Update the acceess token
+        await Users.updateUserById (userId, {
+            accessToken: accessToken
+        });
+
+        // Throw "UserExists" error
+        throw new Error ("This user already exists");
     }
 
     // Save the data
-    const userData = new UserModel({
-        user: userName, 
-        userId,
-        accessToken
-    });
-    userData.save ();
+    Users.createUser (userName, userId, accessToken);
 
     // Return username
     return userName;
@@ -81,13 +60,9 @@ module.exports = async (req, res) => {
         }
     }
 
-    // Build oAuth link
-    const clientId = 14163;
-    const oAuthUrl = "https://stackoverflow.com/oauth/";
-    const redirectUrl = "https://stack.is/";
-    
-    const finalizedUrl = `${oAuthUrl}?client_id=${clientId}&scope=no_expiry&redirect_uri=${redirectUrl}`;
-        
+    // Build OAuth link
+    const oAuthLink = StackExchange.getOAuthLink ();
+
     // Render
-    res.render ("home", { oAuthLink: finalizedUrl });
+    res.render ("home", { oAuthLink: oAuthLink });
 }
