@@ -78,5 +78,5 @@ class StackExchange {
 // Call static constructor for initial static values
 StackExchange.staticConstructor ();
 
-// Export the object
+// Export
 module.exports = StackExchange;

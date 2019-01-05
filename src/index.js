@@ -1,5 +1,4 @@
 // Require local packages
-const fs = require ("fs");
 const path = require ("path");
 
 // Require external packages
@@ -8,13 +7,13 @@ const handlebars = require ("express-handlebars");
 const dotenv = require ("dotenv");
 const mongoose = require ("mongoose");
 
-// Require custom modules
-const routes = require ("./routes");
-
 // Configure environment
 dotenv.config ({
     path: path.join (__dirname, "..", ".env")
 });
+
+// Require custom modules
+const routes = require ("./routes");
 
 // Connect to Mongoose
 mongoose.Promise = global.Promise;
