@@ -23,8 +23,10 @@ async function verifyUser (oAuthCode) {
         if (userName !== existingUser.user) {
             // Update the old entry
             await Users.updateUserById (userId, {
-                user: userName
+                user: userName,
+                accessToken: accessToken
             });
+            return userName;
         } 
 
         // Update the acceess token
