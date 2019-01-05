@@ -52,13 +52,13 @@ class StackExchange {
         return finalizedUrl;
     }
 
-    static async verifyOAuth () {
+    static async verifyOAuth (oAuthCode) {
         const oAuthValidationUrl = 
             `https://stackoverflow.com/oauth/access_token/json`;
 
         const oAuthParams = new URLSearchParams ();
-        oAuthParams.append ("client_id", clientId);
-        oAuthParams.append ("client_secret", clientSecret);
+        oAuthParams.append ("client_id", process.env.OAUTH_CLIENT_ID);
+        oAuthParams.append ("client_secret", process.env.OAUTH_CLIENT_SECRET);
         oAuthParams.append ("redirect_uri", "https://stack.is/");
         oAuthParams.append ("code", oAuthCode);
 
