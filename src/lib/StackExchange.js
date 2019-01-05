@@ -22,7 +22,7 @@ class StackExchange {
                 throw new Error (seUserData ["error_message"]);
             
             // Return the first item
-            return seUSerData ["items"][0];
+            return seUserData ["items"][0];
         } catch (err) {
             throw new Error ("Could not fetch user data.");
         }
